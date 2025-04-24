@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -15,6 +15,7 @@ export default function Login() {
     password: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [disable, setDisable] = useState<boolean>(false);
   const router = useRouter();
 
   const onLogin = async () => {
@@ -30,13 +31,14 @@ export default function Login() {
 
       if (user) {
         setLoading(false)
-        console.log("Logged in user:", user);
         router.refresh();
         router.push('/admin')
       }
       if (error) {
         setLoading(false)
-        toast(error.message);
+        toast(error.message, {
+          style: {backgroundColor: 'var(--destructive)', color: 'white'}
+        });
       }
     } catch (error) {
       setLoading(false)
@@ -54,8 +56,17 @@ export default function Login() {
     }));
   };
 
+  useEffect(() => {
+    if(data.email.length <= 0 || data.password.length <= 0){
+      // console.log(data.email, data.password, disable)
+      setDisable(true)
+    }else{
+      setDisable(false)
+    }
+  }, [data.email, data.password])
+
   return (
-    <div className="md:w-[430px] w-full mx-auto border rounded-2xl shadow-sm">
+    <div className="md:w-[430px] w-full mx-auto rounded-2xl">
       <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-6 p-3">
         <div className="flex flex-col items-center">
           <Image
@@ -63,6 +74,7 @@ export default function Login() {
             width={200}
             height={200}
             alt="Logo"
+            priority
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -85,9 +97,11 @@ export default function Login() {
             onChange={handleChange}
           />
         </div>
-        <Button onClick={onLogin}>{
-          loading ? <Loader2 className="animate-spin"/> : 'Login'
-          }</Button>
+        <Button
+            disabled={disable || loading}
+            onClick={onLogin}
+        >{loading ? <Loader2 className="animate-spin"/> : 'Login'}
+        </Button>
       </form>
     </div>
   );

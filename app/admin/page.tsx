@@ -1,28 +1,32 @@
-'use client'
+"use client";
 
-import { supabase } from "@/lib/supabase/client"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
-import Logout from "@/components/Logout"
+import { supabase } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import Logout from "@/components/Logout";
+import { User } from "@supabase/auth-helpers-nextjs";
 
 export default function Admin() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const loadUser = async () => {
-      const {data, error} = await supabase.auth.getUser()
-      setUser(data.user)
-      console.log(data.user)
-      if(error) toast(error.message)
-    }
-    loadUser()
-  }, [])
-  return <>
-    <div>
-      Admin
-      <p>{}</p>
-
-      <Logout/>
-    </div>
-  </>
+      const { data, error } = await supabase.auth.getUser();
+      setUser(data.user);
+      if (error)
+        toast(error.message, {
+          style: { backgroundColor: "var(--destructive)", color: "white" },
+        });
+    };
+    loadUser();
+  }, []);
+  return (
+    <>
+      <div>
+        Admin
+        <p>{user?.email}</p>
+        <Logout />
+      </div>
+    </>
+  );
 }

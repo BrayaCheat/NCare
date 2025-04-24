@@ -8,8 +8,9 @@ export default function Logout() {
   const onLogout = async () => {
     try {
       await supabase.auth.signOut();
-      toast('Signout')
       router.refresh();
+      router.push('/login')
+      toast('Signout')
     } catch (error) {
       console.log(error);
     }

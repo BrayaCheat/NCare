@@ -3,9 +3,5 @@ export default function LoginLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className="h-[75vh] grid place-items-center p-3">{children}</body>
-    </html>
-  );
+  return <div className="h-[75vh] grid place-items-center p-3">{children}</div>;
 }
