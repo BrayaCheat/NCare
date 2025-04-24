@@ -30,4 +30,5 @@ model Images {
   url       String
   product   Product @relation(fields: [productId], references: [id])
   productId Int     // Foreign key
+  createdAt DateTime @default(now())
 }
