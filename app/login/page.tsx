@@ -7,16 +7,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 export default function Login() {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const onLogin = async () => {
     try {
+      setLoading(true);
       const {
         data: { user },
         error,
@@ -26,12 +29,17 @@ export default function Login() {
       });
 
       if (user) {
+        setLoading(false)
         console.log("Logged in user:", user);
         router.refresh();
         router.push('/admin')
       }
-      if (error) toast(error.message);
+      if (error) {
+        setLoading(false)
+        toast(error.message);
+      }
     } catch (error) {
+      setLoading(false)
       console.error("Unexpected error:", error);
     }
   };
@@ -77,7 +85,9 @@ export default function Login() {
             onChange={handleChange}
           />
         </div>
-        <Button onClick={onLogin}>Login</Button>
+        <Button onClick={onLogin}>{
+          loading ? <Loader2 className="animate-spin"/> : 'Login'
+          }</Button>
       </form>
     </div>
   );
