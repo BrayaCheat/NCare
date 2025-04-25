@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Logout from "@/components/Logout";
 import { User } from "@supabase/auth-helpers-nextjs";
+import WelcomeUser from "@/components/WelcomeUser";
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,8 +24,7 @@ export default function Admin() {
   return (
     <>
       <div>
-        Admin
-        <p>{user?.email}</p>
+        <WelcomeUser email={user?.email}/>
         <Logout />
       </div>
     </>

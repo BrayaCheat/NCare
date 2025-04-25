@@ -10,6 +10,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Custom Font';
+  src: url('/fonts/Euclid Circular A Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
 html, body {
   font-family: 'Custom Font', sans-serif;
 }
