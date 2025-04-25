@@ -23,6 +23,9 @@ export default function Admin() {
   return (
       <div>
         <WelcomeUser email={user?.email}/>
+        <div className="grid grid-cols-2">
+          
+        </div>
       </div>
   );
 }

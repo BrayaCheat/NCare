@@ -19,6 +19,9 @@ model Product {
   id        Int      @id @default(autoincrement())
   name      String
   price     Float
+  description String
+  isDiscount Boolean
+  discountPrice Float
   images    Images[]  // One-to-many relationship
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -32,3 +35,5 @@ model Images {
   productId Int     // Foreign key
   createdAt DateTime @default(now())
 }
+
+// npx prisma migrate dev --name init  # For initial migration
