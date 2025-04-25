@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import FadeTransition from "@/components/transition/Fade";
 
 export const metadata: Metadata = {
   title: "NCare",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="w-full">
-        <Toaster />
-        {children}
+        <FadeTransition>
+          <Toaster />
+          {children}
+        </FadeTransition>
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function Login() {
   const [data, setData] = useState({
@@ -100,7 +100,7 @@ export default function Login() {
         <Button
             disabled={disable || loading}
             onClick={onLogin}
-        >{loading ? <Loader2 className="animate-spin"/> : 'Login'}
+        >{loading ? <Loader className="animate-spin"/> : 'Login'}
         </Button>
       </form>
     </div>
