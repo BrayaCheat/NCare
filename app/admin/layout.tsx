@@ -2,8 +2,6 @@
 
 import AdminHeader from "@/components/AdminHeader";
 import FadeTransition from "@/components/transition/Fade";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSideBar";
 import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
@@ -16,8 +14,8 @@ export default function AdminLayout({
   const pathname = usePathname()
 
   return (
-    <div className="bg-gray-50">
-      <SidebarProvider className="flex flex-col" open={false}>
+    <div className="min-h-screen pb-10 bg-slate-100">
+      {/* <SidebarProvider className="flex flex-col" open={false}>
         <AppSidebar/>
         <div className="sticky top-0 z-10 flex">
           <AdminHeader />
@@ -28,7 +26,16 @@ export default function AdminLayout({
             {children}
           </FadeTransition>
         </AnimatePresence>
-      </SidebarProvider>
+      </SidebarProvider> */}
+
+      <div className="sticky top-0 z-10 flex">
+          <AdminHeader />
+      </div>
+        <AnimatePresence mode="wait" initial={false}>
+          <FadeTransition key={pathname} className="p-3">
+            {children}
+          </FadeTransition>
+        </AnimatePresence>
     </div>
   );
 }

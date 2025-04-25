@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { User } from "@supabase/auth-helpers-nextjs";
 import WelcomeUser from "@/components/WelcomeUser";
+import Link from "next/link";
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,9 +24,7 @@ export default function Admin() {
   return (
       <div>
         <WelcomeUser email={user?.email}/>
-        <div className="grid grid-cols-2">
-          
-        </div>
+        <Link href={'/admin/products'}>Product</Link>
       </div>
   );
 }

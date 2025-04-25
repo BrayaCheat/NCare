@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { Button } from "./ui/button";
 import { ChevronLeft } from "lucide-react";
 
 export default function AdminHeader(){
@@ -21,8 +20,8 @@ export default function AdminHeader(){
   }, [pathname])
 
   return (
-    <div className="w-full backdrop-blur-3xl">
-      <div className="p-2">
+    <div className="w-full bg-white border-b shadow-sm">
+      <div className="py-3">
         {
             isValidPath ? (
             <Link href={'/admin'}>
@@ -37,17 +36,14 @@ export default function AdminHeader(){
           )
           :
           (
-            <div className="flex items-center">
-              <Button variant={'ghost'} onClick={() => router.back()} size={'icon'}>
-                <ChevronLeft/>
-              </Button>
+            <div>
+              <ChevronLeft className="absolute z-10 top-3 left-3" onClick={() => router.back()}/>
               <div className="flex-1 text-center">
                 <h1 className="font-bold">{pathDisplay}</h1>
               </div>
             </div>
           )
         }
-
       </div>
     </div>
   )
