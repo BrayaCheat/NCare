@@ -15,7 +15,6 @@ import {
 import Logout from "./Logout";
 import Link from "next/link";
 import { HouseIcon, Package2Icon } from "lucide-react";
-import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 export function AppSidebar() {

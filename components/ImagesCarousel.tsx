@@ -2,7 +2,6 @@
 
 import React from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { Card } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -53,7 +52,7 @@ export default function AdminCarousel({
                   <Image
                     src={URL.createObjectURL(file)}
                     alt={`upload-preview-${idx}`}
-                    className="object-cover rounded-2xl"
+                    className="object-cover rounded-2xl border"
                     width={100}
                     height={100}
                     style={{

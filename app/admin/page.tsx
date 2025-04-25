@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { User } from "@supabase/auth-helpers-nextjs";
 import WelcomeUser from "@/components/WelcomeUser";
 import Link from "next/link";
+import Logout from "@/components/Logout";
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,6 +26,7 @@ export default function Admin() {
       <div>
         <WelcomeUser email={user?.email}/>
         <Link href={'/admin/products'}>Product</Link>
+        <Logout/>
       </div>
   );
 }

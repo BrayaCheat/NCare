@@ -30,6 +30,31 @@ export default function AddProduct() {
     setContent("");
   };
 
+  //watcher invalid data
+  useEffect(() => {
+
+    if(name.length >= 100){
+      setName(name.slice(0,100))
+      toast.error('Only allow 100 characters', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    }
+
+    if(price.length > 4){
+      setPrice(price.slice(0,4))
+      toast.error('Price can not be 5 digits (Max: $9999)', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    }
+
+    if(discount.length > 4){
+      setDiscount(discount.slice(0,4))
+      toast.error('Discount price can not be 5 digits (Max: $9999)', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    }
+
+    if(content.length >= 1000){
+      setContent(content.slice(0,1000))
+      toast.error('Only allow 1000 characters', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    }
+
+  }, [name, price, discount, content])
+
   const validateForm = () => {
     const errors = [];
 
@@ -67,14 +92,12 @@ export default function AddProduct() {
     setLoading(true);
     const errors = validateForm().join("\n");
     console.log(errors);
-    toast("", {
-      description: errors,
+    toast.error(errors, {
       style: {
         backgroundColor: "var(--destructive)",
         color: "white",
         border: "none",
-      },
-      type: "error",
+      }
     });
     try {
       console.table({ name, price, discount, isDiscount, content, images });
@@ -95,18 +118,26 @@ export default function AddProduct() {
         className="flex flex-col gap-6"
       >
         <Card>
-          <Label htmlFor="product-name">Product name</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="product-name">Product name</Label>
+            <span className="text-xs text-muted-foreground">{name.length} / 100</span>
+          </div>
           <Input
             id="product-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Serum"
+            className=""
+            disabled={name.length >= 100}
           />
         </Card>
 
         <Card>
-          <Label htmlFor="price">Price</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="price">Price</Label>
+            <span className="text-xs text-muted-foreground">$1 - $1000</span>
+          </div>
           <Input
             id="price"
             type="text"
@@ -132,7 +163,11 @@ export default function AddProduct() {
           {isDiscount && (
             <div className="flex flex-col gap-3 p-3 border-none">
               <Separator />
-              <Label htmlFor="discount">Discount Amount?</Label>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="discount">Discount Amount?</Label>
+                <span className="text-xs text-muted-foreground">$1 - $1000</span>
+              </div>
               <Input
                 id="discount"
                 type="text"
@@ -148,7 +183,10 @@ export default function AddProduct() {
         </Card>
 
         <Card>
-          <Label>Description</Label>
+          <div className="flex items-center justify-between">
+              <Label htmlFor="discount">Description</Label>
+              <span className="text-xs text-muted-foreground">{content.trim().length} / 1000</span>
+          </div>
           <Editor content={content} onChange={(html) => setContent(html)} />
         </Card>
 
@@ -164,14 +202,27 @@ export default function AddProduct() {
                 )}
               </span>
             </div>
-            <Label htmlFor="upload-photos">
-              <Plus
-                width={30}
-                height={30}
-                className="p-1 bg-primary text-secondary rounded-full"
-              />
-            </Label>
+
+            <span className="text-xs text-muted-foreground">{images.length} - 5 Photos</span>
           </div>
+
+          {/* drop zone file */}
+          {
+            images.length < 5 && (
+              <div className="flex items-center justify-center w-full">
+                <Label htmlFor="upload-photos" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                    </div>
+                </Label>
+              </div>
+            )
+          }
+
           <Input
             id="upload-photos"
             type="file"
@@ -190,7 +241,7 @@ export default function AddProduct() {
         </Card>
 
         <Button type="submit" className="font-bold" disabled={loading}>
-          {loading ? <Loader className="animate-spin" /> : "Confirm"}
+          {loading ? <Loader className="animate-spin" /> : "Save"}
         </Button>
       </form>
     </div>
