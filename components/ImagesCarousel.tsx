@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import { XIcon } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function AdminCarousel({
   images,
@@ -30,28 +32,39 @@ export default function AdminCarousel({
       onMouseLeave={plugin.current.reset}
     >
       <CarouselContent>
-        {images && images.map((file, idx) => (
-          <CarouselItem key={idx} className="basis-1/3">
-              <Card>
+        {images &&
+          images.map((file, idx) => (
+            <CarouselItem key={idx} className="basis-1/3 relative h-[200px]">
+              <AnimatePresence>
+                <motion.div
+                  key={file.name + idx} // make sure key is unique
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full"
+                >
                   <XIcon
-                    width={20}
-                    height={20}
+                    width={25}
+                    height={25}
                     onClick={() => removeImage(idx)}
+                    className="p-1 bg-destructive text-secondary rounded-full absolute z-10 top-0 right-0"
                   />
                   <Image
                     src={URL.createObjectURL(file)}
                     alt={`upload-preview-${idx}`}
-                    className="object-cover"
+                    className="object-cover rounded-2xl"
                     width={100}
-                    height={50}
+                    height={100}
                     style={{
-                      width: 'auto',
-                      height: 'auto'
+                      width: "100%",
+                      height: "100%",
                     }}
                   />
-              </Card>
-          </CarouselItem>
-        ))}
+                </motion.div>
+              </AnimatePresence>
+            </CarouselItem>
+          ))}
       </CarouselContent>
     </Carousel>
   );

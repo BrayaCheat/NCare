@@ -65,9 +65,17 @@ export default function AddProduct() {
   const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const errors = validateForm().join('\n')
-    console.log(errors)
-    toast('',{description: errors, style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}, type: 'error'})
+    const errors = validateForm().join("\n");
+    console.log(errors);
+    toast("", {
+      description: errors,
+      style: {
+        backgroundColor: "var(--destructive)",
+        color: "white",
+        border: "none",
+      },
+      type: "error",
+    });
     try {
       console.table({ name, price, discount, isDiscount, content, images });
       clearForm();
@@ -75,7 +83,7 @@ export default function AddProduct() {
       setLoading(false);
       console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -94,7 +102,6 @@ export default function AddProduct() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Serum"
-
           />
         </Card>
 
@@ -109,7 +116,6 @@ export default function AddProduct() {
               setPrice(value);
             }}
             placeholder="$100"
-
           />
         </Card>
 
@@ -136,7 +142,6 @@ export default function AddProduct() {
                   setDiscount(value);
                 }}
                 placeholder="$3"
-
               />
             </div>
           )}
@@ -151,10 +156,20 @@ export default function AddProduct() {
           <div className="flex items-center justify-between">
             <div>
               <Label>Photos</Label>
-              <span className="text-muted-foreground text-sm">you have ({images.length} photo)</span>
+              <span className="text-muted-foreground text-sm">
+                {images.length ? (
+                  <p>you have {images.length} photo</p>
+                ) : (
+                  <p className="text-destructive">photos are required</p>
+                )}
+              </span>
             </div>
             <Label htmlFor="upload-photos">
-                <Plus width={30} height={30} className="p-1 bg-primary text-secondary rounded-full"/>
+              <Plus
+                width={30}
+                height={30}
+                className="p-1 bg-primary text-secondary rounded-full"
+              />
             </Label>
           </div>
           <Input
@@ -164,8 +179,8 @@ export default function AddProduct() {
             onChange={(e) => {
               const filesList = e.target.files;
               if (filesList) {
-                const files = Array.from(filesList);
-                setImages(files);
+                const newFiles = Array.from(filesList);
+                setImages((prev) => [...prev, ...newFiles]);
               }
             }}
             className="hidden"
