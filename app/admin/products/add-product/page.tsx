@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Loader, Plus } from "lucide-react";
+import { Loader } from "lucide-react";
 import ImagesCarousel from "@/components/ImagesCarousel";
 import { toast } from "sonner";
 
