@@ -3,7 +3,6 @@
 import { supabase } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Logout from "@/components/Logout";
 import { User } from "@supabase/auth-helpers-nextjs";
 import WelcomeUser from "@/components/WelcomeUser";
 
@@ -22,11 +21,8 @@ export default function Admin() {
     loadUser();
   }, []);
   return (
-    <>
       <div>
         <WelcomeUser email={user?.email}/>
-        <Logout />
       </div>
-    </>
   );
 }

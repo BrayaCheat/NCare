@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { Loader } from "lucide-react";
+import { Loader, LogOutIcon } from "lucide-react";
 
 export default function Logout() {
   const router = useRouter();
@@ -29,12 +29,10 @@ export default function Logout() {
   };
 
   return (
-    <>
       <div>
-        <Button variant={"destructive"} onClick={onLogout} disabled={loading}>
-          {loading ? <Loader className="animate-spin" /> : "Logout"}
+        <Button variant={"destructive"} onClick={onLogout} disabled={loading} className="w-full">
+          {loading ? <Loader className="animate-spin" /> : (<div className="flex items-center gap-2 font-bold"><LogOutIcon/>Logout</div>)}
         </Button>
       </div>
-    </>
   );
 }
