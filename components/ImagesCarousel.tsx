@@ -26,7 +26,7 @@ export default function AdminCarousel({
 
   return (
     <Carousel
-      plugins={[plugin.current]}
+      // plugins={[plugin.current]}
       className="w-full"
       onMouseEnter={plugin.current.stop}
       onMouseLeave={plugin.current.reset}
