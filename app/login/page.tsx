@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Loader } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function Login() {
   const [data, setData] = useState({
@@ -78,7 +79,7 @@ export default function Login() {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <label>Email</label>
+          <Label>Email</Label>
           <Input
             name="email"
             placeholder="NCare@example.com"
@@ -88,7 +89,7 @@ export default function Login() {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <label>Password</label>
+          <Label>Password</Label>
           <Input
             name="password"
             placeholder="**********"

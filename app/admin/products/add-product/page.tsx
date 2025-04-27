@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import ImagesCarousel from "@/components/ImagesCarousel";
 import { toast } from "sonner";
+import { AnimatePresence } from "framer-motion";
+import FadeTransition from "@/components/transition/Fade";
 
 export default function AddProduct() {
   const [name, setName] = useState<string>("");
@@ -32,28 +34,50 @@ export default function AddProduct() {
 
   //watcher invalid data
   useEffect(() => {
-
-    if(name.length >= 100){
-      setName(name.slice(0,100))
-      toast.error('Only allow 100 characters', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    if (name.length >= 100) {
+      setName(name.slice(0, 100));
+      toast.error("Only allow 100 characters", {
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "white",
+          border: "none",
+        },
+      });
     }
 
-    if(price.length > 4){
-      setPrice(price.slice(0,4))
-      toast.error('Price can not be 5 digits (Max: $9999)', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    if (price.length > 4) {
+      setPrice(price.slice(0, 4));
+      toast.error("Price can not be 5 digits (Max: $9999)", {
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "white",
+          border: "none",
+        },
+      });
     }
 
-    if(discount.length > 4){
-      setDiscount(discount.slice(0,4))
-      toast.error('Discount price can not be 5 digits (Max: $9999)', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    if (discount.length > 4) {
+      setDiscount(discount.slice(0, 4));
+      toast.error("Discount price can not be 5 digits (Max: $9999)", {
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "white",
+          border: "none",
+        },
+      });
     }
 
-    if(content.length >= 1000){
-      setContent(content.slice(0,1000))
-      toast.error('Only allow 1000 characters', {style: {backgroundColor: 'var(--destructive)', color: 'white', border: 'none'}})
+    if (content.length >= 1000) {
+      setContent(content.slice(0, 1000));
+      toast.error("Only allow 1000 characters", {
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "white",
+          border: "none",
+        },
+      });
     }
-
-  }, [name, price, discount, content])
+  }, [name, price, discount, content]);
 
   const validateForm = () => {
     const errors = [];
@@ -91,14 +115,16 @@ export default function AddProduct() {
     e.preventDefault();
     setLoading(true);
     const errors = validateForm().join("\n");
-    console.log(errors);
-    toast.error(errors, {
-      style: {
-        backgroundColor: "var(--destructive)",
-        color: "white",
-        border: "none",
-      }
-    });
+    if (errors) {
+      clearForm();
+      toast.error(errors, {
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "white",
+          border: "none",
+        },
+      });
+    }
     try {
       console.table({ name, price, discount, isDiscount, content, images });
       clearForm();
@@ -120,7 +146,9 @@ export default function AddProduct() {
         <Card>
           <div className="flex items-center justify-between">
             <Label htmlFor="product-name">Product name</Label>
-            <span className="text-xs text-muted-foreground">{name.length} / 100</span>
+            <span className="text-xs text-muted-foreground">
+              {name.length} / 100
+            </span>
           </div>
           <Input
             id="product-name"
@@ -161,31 +189,39 @@ export default function AddProduct() {
           </div>
 
           {isDiscount && (
-            <div className="flex flex-col gap-3 p-3 border-none">
-              <Separator />
+            <AnimatePresence>
+              <FadeTransition>
+                <div className="flex flex-col gap-3 p-3 border-none">
+                  <Separator />
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="discount">Discount Amount?</Label>
-                <span className="text-xs text-muted-foreground">$1 - $1000</span>
-              </div>
-              <Input
-                id="discount"
-                type="text"
-                value={discount}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/[^0-9.]/g, "");
-                  setDiscount(value);
-                }}
-                placeholder="$3"
-              />
-            </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="discount">Discount Amount?</Label>
+                    <span className="text-xs text-muted-foreground">
+                      $1 - $1000
+                    </span>
+                  </div>
+                  <Input
+                    id="discount"
+                    type="text"
+                    value={discount}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9.]/g, "");
+                      setDiscount(value);
+                    }}
+                    placeholder="$3"
+                  />
+                </div>
+              </FadeTransition>
+            </AnimatePresence>
           )}
         </Card>
 
         <Card>
           <div className="flex items-center justify-between">
-              <Label htmlFor="discount">Description</Label>
-              <span className="text-xs text-muted-foreground">{content.trim().length} / 1000</span>
+            <Label htmlFor="discount">Description</Label>
+            <span className="text-xs text-muted-foreground">
+              {content.trim().length} / 1000
+            </span>
           </div>
           <Editor content={content} onChange={(html) => setContent(html)} />
         </Card>
@@ -203,25 +239,45 @@ export default function AddProduct() {
               </span>
             </div>
 
-            <span className="text-xs text-muted-foreground">{images.length} - 5 Photos</span>
+            <span className="text-xs text-muted-foreground">
+              {images.length} - 5 Photos
+            </span>
           </div>
 
           {/* drop zone file */}
-          {
-            images.length < 5 && (
-              <div className="flex items-center justify-center w-full">
-                <Label htmlFor="upload-photos" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                        </svg>
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                    </div>
-                </Label>
-              </div>
-            )
-          }
+          {images.length < 5 && (
+            <div className="flex items-center justify-center w-full">
+              <Label
+                htmlFor="upload-photos"
+                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  </p>
+                </div>
+              </Label>
+            </div>
+          )}
 
           <Input
             id="upload-photos"

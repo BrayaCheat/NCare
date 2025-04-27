@@ -37,7 +37,7 @@ export default function AdminHeader(){
           :
           (
             <div>
-              <ChevronLeft className="absolute z-10 top-3 left-3" onClick={() => router.back()}/>
+              <ChevronLeft className="absolute z-10 top-3 left-3 cursor-pointer" onClick={() => router.back()}/>
               <div className="flex-1 text-center">
                 <h1 className="font-bold">{pathDisplay}</h1>
               </div>
