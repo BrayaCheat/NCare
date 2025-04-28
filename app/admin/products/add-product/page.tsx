@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Loader } from "lucide-react";
+import { ChevronRight, Loader } from "lucide-react";
 import ImagesCarousel from "@/components/ImagesCarousel";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
@@ -32,6 +32,24 @@ export default function AddProduct() {
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const defaultCategories = [
+    {
+      id: 1,
+      label: 'Lipstick',
+      value: 'Lipstick'
+    },
+    {
+      id: 2,
+      label: 'Cream',
+      value: 'Cream'
+    },
+    {
+      id: 3,
+      label: 'Powder',
+      value: 'Powder'
+    }
+  ]
 
   const clearForm = () => {
     setName("");
@@ -209,11 +227,14 @@ export default function AddProduct() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Options</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="blueberry">Blueberry</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-                <SelectItem value="pineapple">Pineapple</SelectItem>
+                {
+                  defaultCategories.map(item => (
+                    <SelectItem key={item.id} value={item.value}>
+                      <span className="flex-1">{item.label}</span>
+                      <ChevronRight size={20}/>
+                    </SelectItem>
+                  ))
+                }
               </SelectGroup>
             </SelectContent>
           </Select>

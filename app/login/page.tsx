@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import useUserStore from "../store/user";
 
 export default function Login() {
   const [data, setData] = useState({
@@ -18,6 +19,7 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [disable, setDisable] = useState<boolean>(false);
   const router = useRouter();
+  const {setUser} = useUserStore()
 
   const onLogin = async () => {
     try {
@@ -32,6 +34,7 @@ export default function Login() {
 
       if (user) {
         setLoading(false)
+        setUser(user);
         router.refresh();
         router.push('/admin')
       }

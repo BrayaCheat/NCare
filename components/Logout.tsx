@@ -1,30 +1,25 @@
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Loader, LogOutIcon } from "lucide-react";
+import useUserStore from "@/app/store/user";
 
 export default function Logout() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const {clearUser} = useUserStore()
+  
   const onLogout = async () => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        setLoading(false);
-        toast(error?.message, {
-          style: { backgroundColor: "var(--destructive)", color: "white" },
-        });
-      }
-      router.refresh();
-      setLoading(false);
-      router.push("/login");
-      toast("Signout");
+      await supabase.auth.signOut();
+      clearUser()
+      router.refresh()
     } catch (error) {
-      setLoading(false);
       console.log(error);
+    } finally {
+      setLoading(false)
     }
   };
 
