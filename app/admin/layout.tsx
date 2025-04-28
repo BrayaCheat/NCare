@@ -4,6 +4,7 @@ import AdminHeader from "@/components/AdminHeader";
 import FadeTransition from "@/components/transition/Fade";
 import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
@@ -14,7 +15,7 @@ export default function AdminLayout({
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen pb-10 bg-slate-100">
+    <div className="min-h-screen pb-10 bg-slate-100 sm:w-[530px] w-full mx-auto">
       {/* <SidebarProvider className="flex flex-col" open={false}>
         <AppSidebar/>
         <div className="sticky top-0 z-10 flex">
@@ -31,8 +32,9 @@ export default function AdminLayout({
       <div className="sticky top-0 z-10 flex">
           <AdminHeader />
       </div>
-        <AnimatePresence mode="sync" initial={false}>
+        <AnimatePresence mode="wait" initial={false}>
           <FadeTransition key={pathname} className="p-3">
+            <Toaster/>
             {children}
           </FadeTransition>
         </AnimatePresence>

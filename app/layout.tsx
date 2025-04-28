@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 import FadeTransition from "@/components/transition/Fade";
 
 export const metadata: Metadata = {
@@ -40,9 +39,6 @@ export default function RootLayout({
       </head>
       <body className="w-full">
         <FadeTransition>
-        <Toaster
-          position={'bottom-center'}
-        />
           {children}
         </FadeTransition>
       </body>

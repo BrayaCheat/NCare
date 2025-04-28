@@ -55,8 +55,7 @@ export default function Editor({content, onChange}: {content: string, onChange: 
   }
 
   return (
-    <div>
-      <div className=''>
+      <div>
         <EditorToolbar
           editor={editor}
         />
@@ -64,6 +63,5 @@ export default function Editor({content, onChange}: {content: string, onChange: 
           editor={editor}
         />
       </div>
-    </div>
   )
 }

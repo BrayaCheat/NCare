@@ -3,16 +3,15 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Editor from "@/components/Editor";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Loader } from "lucide-react";
 import ImagesCarousel from "@/components/ImagesCarousel";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 import FadeTransition from "@/components/transition/Fade";
+import { ERROR_TOAST } from "@/app/utils/helper";
 import {
   Select,
   SelectContent,
@@ -22,92 +21,71 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CategoryModal from "@/components/CategoryModal";
+import { Loader } from "lucide-react";
+import useUserStore from "@/app/store/user";
+
+interface CategoryType {
+  id: string;
+  name: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default function AddProduct() {
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<CategoryType[]>([]);
   const [discount, setDiscount] = useState<string>("");
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const defaultCategories = [
-    {
-      id: 1,
-      label: 'Lipstick',
-      value: 'Lipstick'
-    },
-    {
-      id: 2,
-      label: 'Cream',
-      value: 'Cream'
-    },
-    {
-      id: 3,
-      label: 'Powder',
-      value: 'Powder'
-    }
-  ]
-
+  const { user } = useUserStore();
   const clearForm = () => {
     setName("");
     setPrice("");
-    setCategory("");
+    setSelectedCategory("");
     setDiscount("");
     setIsDiscount(false);
     setImages([]);
     setContent("");
   };
 
-  //watcher invalid data
+  // validate when user input
   useEffect(() => {
     if (name.length >= 100) {
       setName(name.slice(0, 100));
-      toast.error("Only allow 100 characters", {
-        style: {
-          backgroundColor: "var(--destructive)",
-          color: "white",
-          border: "none",
-        },
-      });
+      toast.error("Only allow 100 characters", ERROR_TOAST);
     }
 
     if (price.length > 4) {
       setPrice(price.slice(0, 4));
-      toast.error("Price can not be 5 digits (Max: $9999)", {
-        style: {
-          backgroundColor: "var(--destructive)",
-          color: "white",
-          border: "none",
-        },
-      });
+      toast.error("Price can not be 5 digits (Max: $9999)", ERROR_TOAST);
     }
 
     if (discount.length > 4) {
       setDiscount(discount.slice(0, 4));
-      toast.error("Discount price can not be 5 digits (Max: $9999)", {
-        style: {
-          backgroundColor: "var(--destructive)",
-          color: "white",
-          border: "none",
-        },
-      });
+      toast.error(
+        "Discount price can not be 5 digits (Max: $9999)",
+        ERROR_TOAST
+      );
     }
 
     if (content.length >= 1000) {
       setContent(content.slice(0, 1000));
-      toast.error("Only allow 1000 characters", {
-        style: {
-          backgroundColor: "var(--destructive)",
-          color: "white",
-          border: "none",
-        },
-      });
+      toast.error("Only allow 1000 characters", ERROR_TOAST);
     }
-  }, [name, price, discount, content]);
 
+    if (images.length >= 5) {
+      setImages(images.slice(0, 5));
+      toast.error("Only allow 5 images", ERROR_TOAST);
+    }
+  }, [name, price, content, images, discount]);
+
+  // validate when user submit
   const validateForm = () => {
     const errors = [];
 
@@ -119,7 +97,7 @@ export default function AddProduct() {
       errors.push("Price must be a positive number.");
     }
 
-    if (!category || category.trim() === "") {
+    if (!selectedCategory || selectedCategory.trim() === "") {
       errors.push("Category is required.");
     }
 
@@ -132,7 +110,7 @@ export default function AddProduct() {
     }
 
     if (!content || content.trim() === "") {
-      errors.push("Content is required.");
+      errors.push("Description is required.");
     }
 
     return errors;
@@ -144,39 +122,53 @@ export default function AddProduct() {
     setImages(updatedImages);
   };
 
-  const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     const errors = validateForm().join("\n");
     if (errors) {
-      clearForm();
-      toast.error(errors, {
-        style: {
-          backgroundColor: "var(--destructive)",
-          color: "white",
-          border: "none",
-        },
-      });
+      toast.error(errors, ERROR_TOAST)
+      return
     }
     try {
-      console.table({ name, price, discount, isDiscount, content, images });
-      clearForm();
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("categoryId", selectedCategory); // Using ID instead of name
+      formData.append("isDiscount", String(isDiscount));
+      formData.append("discountPrice", discount);
+      formData.append("description", content);
+      formData.append("userId", user?.id || '')
+      images.map(image => formData.append('images', image))
+      setLoading(true);
+      const res = await fetch(`/api/products`, {
+        method: "POST",
+        body: formData
+      });
+      console.log('Response back: ', res)
     } catch (error) {
-      setLoading(false);
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/categories`);
+      const data = await res.json();
+      setCategory(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   useEffect(() => {
-    console.log("Category: ", category);
-  }, [category]);
+    fetchCategories();
+  }, [fetchCategories]);
 
   return (
     <div className="flex flex-col gap-6">
       <form
-        action=""
         onSubmit={handleCreateProduct}
         className="flex flex-col gap-6"
       >
@@ -193,8 +185,6 @@ export default function AddProduct() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Serum"
-            className=""
-            disabled={name.length >= 100}
           />
         </Card>
 
@@ -213,34 +203,8 @@ export default function AddProduct() {
             }}
             placeholder="$100"
           />
-        </Card>
 
-        <Card>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="price">Category</Label>
-            <span className="text-xs text-muted-foreground">New category</span>
-          </div>
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="bg-gray-50 focus-visible:none w-1/2">
-              <SelectValue placeholder="Select a fruit" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Options</SelectLabel>
-                {
-                  defaultCategories.map(item => (
-                    <SelectItem key={item.id} value={item.value}>
-                      <span className="flex-1">{item.label}</span>
-                      <ChevronRight size={20}/>
-                    </SelectItem>
-                  ))
-                }
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Card>
-
-        <Card>
+          {/* discount section */}
           <div className="flex items-center space-x-2">
             <Checkbox
               id="is-discount"
@@ -253,15 +217,6 @@ export default function AddProduct() {
           {isDiscount && (
             <AnimatePresence>
               <FadeTransition>
-                <div className="flex flex-col gap-3 p-3 border-none">
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="discount">Discount Amount?</Label>
-                    <span className="text-xs text-muted-foreground">
-                      $1 - $1000
-                    </span>
-                  </div>
                   <Input
                     id="discount"
                     type="text"
@@ -272,10 +227,34 @@ export default function AddProduct() {
                     }}
                     placeholder="$3"
                   />
-                </div>
               </FadeTransition>
             </AnimatePresence>
           )}
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="price">Category</Label>
+            <span className="text-xs text-muted-foreground">
+              <CategoryModal />
+            </span>
+          </div>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="bg-gray-50 focus-visible:none w-1/2">
+              <SelectValue placeholder="Choose a category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Options</SelectLabel>
+                {category.length > 0 &&
+                  category.map((item) => (
+                    <SelectItem key={item.id} value={item.id.toString()}>
+                      <span className="flex-1">{item.name}</span>
+                    </SelectItem>
+                  ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </Card>
 
         <Card>
@@ -292,13 +271,6 @@ export default function AddProduct() {
           <div className="flex items-center justify-between">
             <div>
               <Label>Photos</Label>
-              <span className="text-muted-foreground text-sm">
-                {images.length ? (
-                  <p>you have {images.length} photo</p>
-                ) : (
-                  <p className="text-destructive">photos are required</p>
-                )}
-              </span>
             </div>
 
             <span className="text-xs text-muted-foreground">
@@ -311,7 +283,7 @@ export default function AddProduct() {
             <div className="flex items-center justify-center w-full">
               <Label
                 htmlFor="upload-photos"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                className="flex flex-col items-center justify-center w-full h-64 border rounded-lg cursor-pointer bg-gray-50"
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <svg
@@ -349,7 +321,7 @@ export default function AddProduct() {
               const filesList = e.target.files;
               if (filesList) {
                 const newFiles = Array.from(filesList);
-                setImages((prev) => [...prev, ...newFiles]);
+                setImages(prev => [...prev, ...newFiles]);
               }
             }}
             className="hidden"
@@ -358,8 +330,12 @@ export default function AddProduct() {
           <ImagesCarousel images={images} removeImage={onRemoveImage} />
         </Card>
 
-        <div className="flex items-center justify-center">
-          <Button type="submit" className="font-bold w-1/2 z-0" disabled={loading}>
+        <div className="flex items-center justify-center sticky z-50 bottom-0 pb-3">
+          <Button
+            type="submit"
+            className="font-bold w-1/2 cursor-pointer"
+            disabled={loading}
+          >
             {loading ? <Loader className="animate-spin" /> : "Save"}
           </Button>
         </div>

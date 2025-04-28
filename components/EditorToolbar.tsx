@@ -12,7 +12,7 @@ import {
   ListOrdered,
   Strikethrough,
   Undo,
-  Redo
+  Redo,
 } from "lucide-react";
 import { Toggle } from "./ui/toggle";
 import { Editor } from "@tiptap/react";
@@ -83,6 +83,9 @@ export default function EditorToolbar({ editor }: { editor: Editor | null }) {
       onClick: () => editor.chain().focus().toggleHighlight().run(),
       preesed: editor.isActive("highlight"),
     },
+  ];
+
+  const RedoUndoOptions = [
     {
       icon: <Undo className="size-4" />,
       onClick: () => editor.chain().focus().undo().run(),
@@ -96,16 +99,29 @@ export default function EditorToolbar({ editor }: { editor: Editor | null }) {
   ];
 
   return (
-    <div className="border rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-50 grid grid-cols-6">
-      {Options.map((option, index) => (
-        <Toggle
-          key={index}
-          pressed={option.preesed}
-          onPressedChange={option.onClick}
-        >
-          {option.icon}
-        </Toggle>
-      ))}
+    <div className="flex items-center gap-3">
+      <div className="border rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-0 flex items-center">
+        {RedoUndoOptions.map((option, index) => (
+          <Toggle
+            key={index}
+            pressed={option.preesed}
+            onPressedChange={option.onClick}
+          >
+            {option.icon}
+          </Toggle>
+        ))}
+      </div>
+      <div className="border rounded-md p-1 mb-1 bg-slate-50 space-x-2 z-0 flex items-center overflow-x-scroll">
+        {Options.map((option, index) => (
+          <Toggle
+            key={index}
+            pressed={option.preesed}
+            onPressedChange={option.onClick}
+          >
+            {option.icon}
+          </Toggle>
+        ))}
+      </div>
     </div>
   );
 }
