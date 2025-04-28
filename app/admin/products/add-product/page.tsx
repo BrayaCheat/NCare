@@ -13,10 +13,20 @@ import ImagesCarousel from "@/components/ImagesCarousel";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
 import FadeTransition from "@/components/transition/Fade";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AddProduct() {
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
   const [discount, setDiscount] = useState<string>("");
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
@@ -26,6 +36,7 @@ export default function AddProduct() {
   const clearForm = () => {
     setName("");
     setPrice("");
+    setCategory("");
     setDiscount("");
     setIsDiscount(false);
     setImages([]);
@@ -90,6 +101,10 @@ export default function AddProduct() {
       errors.push("Price must be a positive number.");
     }
 
+    if (!category || category.trim() === "") {
+      errors.push("Category is required.");
+    }
+
     if (isDiscount && (!discount || Number(discount) <= 0)) {
       errors.push("Discount must be a positive number if discount is enabled.");
     }
@@ -136,6 +151,10 @@ export default function AddProduct() {
     }
   };
 
+  useEffect(() => {
+    console.log("Category: ", category);
+  }, [category]);
+
   return (
     <div className="flex flex-col gap-6">
       <form
@@ -176,6 +195,28 @@ export default function AddProduct() {
             }}
             placeholder="$100"
           />
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="price">Category</Label>
+            <span className="text-xs text-muted-foreground">New category</span>
+          </div>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="bg-gray-50 focus-visible:none w-1/2">
+              <SelectValue placeholder="Select a fruit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Options</SelectLabel>
+                <SelectItem value="apple">Apple</SelectItem>
+                <SelectItem value="banana">Banana</SelectItem>
+                <SelectItem value="blueberry">Blueberry</SelectItem>
+                <SelectItem value="grapes">Grapes</SelectItem>
+                <SelectItem value="pineapple">Pineapple</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </Card>
 
         <Card>
@@ -296,9 +337,11 @@ export default function AddProduct() {
           <ImagesCarousel images={images} removeImage={onRemoveImage} />
         </Card>
 
-        <Button type="submit" className="font-bold" disabled={loading}>
-          {loading ? <Loader className="animate-spin" /> : "Save"}
-        </Button>
+        <div className="flex items-center justify-center">
+          <Button type="submit" className="font-bold w-1/2 z-0" disabled={loading}>
+            {loading ? <Loader className="animate-spin" /> : "Save"}
+          </Button>
+        </div>
       </form>
     </div>
   );

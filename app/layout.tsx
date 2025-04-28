@@ -40,7 +40,9 @@ export default function RootLayout({
       </head>
       <body className="w-full">
         <FadeTransition>
-          <Toaster />
+        <Toaster
+          position={'bottom-center'}
+        />
           {children}
         </FadeTransition>
       </body>

@@ -14,7 +14,7 @@ export default function AdminLayout({
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen pb-10 bg-slate-100 flex flex-col">
+    <div className="min-h-screen pb-10 bg-slate-100">
       {/* <SidebarProvider className="flex flex-col" open={false}>
         <AppSidebar/>
         <div className="sticky top-0 z-10 flex">
@@ -31,8 +31,8 @@ export default function AdminLayout({
       <div className="sticky top-0 z-10 flex">
           <AdminHeader />
       </div>
-        <AnimatePresence mode="wait" initial={false}>
-          <FadeTransition key={pathname} className="p-3 flex-1">
+        <AnimatePresence mode="sync" initial={false}>
+          <FadeTransition key={pathname} className="p-3">
             {children}
           </FadeTransition>
         </AnimatePresence>

@@ -15,25 +15,37 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Product {
+model Category {
   id        Int      @id @default(autoincrement())
   name      String
-  price     Float
-  description String
-  isDiscount Boolean
-  discountPrice Float
-  images    Images[]  // One-to-many relationship
+  products  Product[]  // Changed to singular
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
 }
 
-model Images {
-  id        Int     @id @default(autoincrement())
-  url       String
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int     // Foreign key
-  createdAt DateTime @default(now())
+model Product {  // Renamed to singular
+  id             Int      @id @default(autoincrement())
+  name           String
+  price          Float
+  description    String
+  isDiscount     Boolean  @default(false)  // Added default
+  discountPrice  Float?   // Made optional
+  images         Image[]  // Singular
+  category       Category @relation(fields: [categoryId], references: [id])
+  categoryId     Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  userId         String
+}
+
+model Image {  // Renamed to singular
+  id         Int      @id @default(autoincrement())
+  url        String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int
+  createdAt  DateTime @default(now())
+  userId     String   // Added for consistency
 }
 
 // npx prisma migrate dev --name init  # For initial migration
