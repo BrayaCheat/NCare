@@ -26,7 +26,7 @@ export default function AdminCarousel() {
           <CarouselItem key={index}>
             <div className="p-1">
               <Card>
-                <CardContent className="flex items-center justify-center p-3">
+                <CardContent className="flex items-center justify-center px-3 py-9">
                   <span className="text-4xl font-semibold">{index + 1}</span>
                 </CardContent>
               </Card>

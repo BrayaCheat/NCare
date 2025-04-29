@@ -1,34 +1,30 @@
 "use client";
 
 import React from "react";
-import { Card } from "./ui/card";
-import { Label } from "./ui/label";
 import Link from "next/link";
-import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 
 export default function NavigateCard({
   url,
-  image,
   title,
   description,
   icon,
 }: {
   url: string;
-  image?: string;
   title: string;
   description?: string;
   icon?: React.ReactElement;
 }) {
   return (
     <Link href={url}>
-      <Image src={image || ''} alt='' />
-      <Card className="gap-0">
-        <div className="flex flex-row items-center justify-between">
-          <Label>{title}</Label>
-          <span className="text-muted-foreground">{icon}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="p-1 rounded-xl bg-primary text-white">{icon}</span>
+            <span className="text-muted-foreground">{title}</span>
+          </div>
+          <span className="text-muted-foreground"><ChevronRight size={20}/></span>
         </div>
         <span className="text-xs text-muted-foreground">{description}</span>
-      </Card>
     </Link>
   );
 }

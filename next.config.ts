@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true
   },
-  devIndicators: false
+  devIndicators: false,
+  images: {
+    domains: ['uvcygqzbvdatedzrzwsj.supabase.co'],
+  },
 };
 
 export default nextConfig;

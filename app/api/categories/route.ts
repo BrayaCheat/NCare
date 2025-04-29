@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../singleton/prisma";
+import { prisma } from "@/lib/prisma/prisma";
 
 export async function GET() {
   try {
@@ -24,7 +24,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Created new category", data });
   } catch (error) {
     return NextResponse.json({ message: "Server error", error });
-  } finally {
-    await prisma.$disconnect();
   }
 }

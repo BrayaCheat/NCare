@@ -23,3 +23,7 @@ export const DEFAULT_CATEGORIES = [
     value: 'Powder'
   }
 ]
+
+export const BUCKET_URL = process.env.NEXT_PUBLIC_BUCKET_URL
+
+export const DISPLAY_IMAGE = (url) => BUCKET_URL + url;

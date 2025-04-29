@@ -1,29 +1,15 @@
-"use client";
+'use client'
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import Editor from "@/components/Editor";
-import React, { useCallback, useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import ImagesCarousel from "@/components/ImagesCarousel";
-import { toast } from "sonner";
-import { ERROR_TOAST } from "@/app/utils/helper";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import CategoryModal from "@/components/CategoryModal";
-import { Loader } from "lucide-react";
-import useUserStore from "@/app/store/user";
-import { Category } from "@/types/Category";
+import { useParams } from "next/navigation"
+import React, { useCallback, useEffect, useState } from "react"
+import { Product } from "@/types/Product"
+import { Card } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import Image from "next/image"
+import { DISPLAY_IMAGE } from "@/app/utils/helper"
+import { Input } from "@/components/ui/input"
 
-export default function AddProduct() {
+export default function DetailProduct(){
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [category, setCategory] = useState<Category[]>([]);
@@ -34,82 +20,26 @@ export default function AddProduct() {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUserStore();
+  const params = useParams()
+  const id = params.productId
+  const [product, setProduct] = useState<Product>()
 
-  const clearForm = () => {
-    setName("");
-    setPrice("");
-    setSelectedCategory("");
-    setDiscount("");
-    setIsDiscount(false);
-    setImages([]);
-    setContent("");
-  };
+  const fetchProductById = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/products/${id}`)
+      const data = await res.json()
+      setProduct(data.product)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [id])
 
-  // validate when user input
   useEffect(() => {
-    if (name.length >= 100) {
-      setName(name.slice(0, 100));
-      toast.error("Only allow 100 characters", ERROR_TOAST);
-    }
+    fetchProductById()
+  }, [fetchProductById])
 
-    if (price.length > 4) {
-      setPrice(price.slice(0, 4));
-      toast.error("Price can not be 5 digits (Max: $9999)", ERROR_TOAST);
-    }
-
-    if (discount.length > 4) {
-      setDiscount(discount.slice(0, 4));
-      toast.error(
-        "Discount price can not be 5 digits (Max: $9999)",
-        ERROR_TOAST
-      );
-    }
-
-    if (content.length >= 1000) {
-      setContent(content.slice(0, 1000));
-      toast.error("Only allow 1000 characters", ERROR_TOAST);
-    }
-
-  }, [name, price, content, discount]);
-
-  // validate when user submit
-  const validateForm = () => {
-    const errors = [];
-
-    if (!name || name.trim() === "") {
-      errors.push("Name is required.");
-    }
-
-    if (!price || Number(price) <= 0) {
-      errors.push("Price must be a positive number.");
-    }
-
-    if (!selectedCategory || selectedCategory.trim() === "") {
-      errors.push("Category is required.");
-    }
-
-    if (isDiscount && (!discount || Number(discount) <= 0)) {
-      errors.push("Discount must be a positive number if discount is enabled.");
-    }
-
-    if (images.length === 0) {
-      errors.push("At least one image is required.");
-    }
-
-    if (!content || content.trim() === "") {
-      errors.push("Description is required.");
-    }
-
-    return errors;
-  };
-
-  const onRemoveImage = (idx: number) => {
-    const updatedImages = [...images];
-    updatedImages.splice(idx, 1);
-    setImages(updatedImages);
-  };
-
-  const handleCreateProduct = async (e: React.FormEvent) => {
+  const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm().join("\n");
     if (errors) {
@@ -137,27 +67,13 @@ export default function AddProduct() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchCategories = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/categories`);
-      const data = await res.json();
-      setCategory(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <Label>Update Product</Label>
       <form
-        onSubmit={handleCreateProduct}
+        onSubmit={handleUpdateProduct}
         className="flex flex-col gap-6"
       >
         <Card>
@@ -224,7 +140,7 @@ export default function AddProduct() {
           <div className="flex items-center justify-between">
             <Label htmlFor="price">Category</Label>
             <span className="text-xs text-muted-foreground">
-              <CategoryModal />
+              <Cat />
             </span>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -331,5 +247,5 @@ export default function AddProduct() {
         </div>
       </form>
     </div>
-  );
+  )
 }
