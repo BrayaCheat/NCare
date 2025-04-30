@@ -2,7 +2,7 @@ import { Product } from "./Product";
 
 export interface Image {
   id: number,
-  url: string,
+  url?: string,
   productId: number,
   product: Product,
   createdAt: Date,

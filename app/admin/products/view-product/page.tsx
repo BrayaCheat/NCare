@@ -33,7 +33,7 @@ export default function ViewProduct() {
           <Link href={`/admin/products/view-product/${item.id}`} key={item.id}>
             <Card className="flex flex-row">
               <Image
-                src={DISPLAY_IMAGE(item?.images[0]?.url)}
+                src={DISPLAY_IMAGE(item.images[0].url)}
                 alt={item.name}
                 width={50}
                 height={50}

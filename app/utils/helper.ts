@@ -24,6 +24,6 @@ export const DEFAULT_CATEGORIES = [
   }
 ]
 
-export const BUCKET_URL = process.env.NEXT_PUBLIC_BUCKET_URL
+export const BUCKET_URL = process.env.NEXT_PUBLIC_BUCKET_URL || ''
 
-export const DISPLAY_IMAGE = (url) => BUCKET_URL + url;
+export const DISPLAY_IMAGE = (url?: string | undefined) => BUCKET_URL + url;

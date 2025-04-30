@@ -131,6 +131,7 @@ export default function AddProduct() {
         method: "POST",
         body: formData
       });
+      clearForm()
       console.log('Response back: ', res)
     } catch (error) {
       console.log(error);
@@ -155,7 +156,6 @@ export default function AddProduct() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Label>Update Product</Label>
       <form
         onSubmit={handleCreateProduct}
         className="flex flex-col gap-6"

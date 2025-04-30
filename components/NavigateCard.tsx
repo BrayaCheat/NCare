@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Settings } from "lucide-react";
 
 export default function NavigateCard({
   url,
@@ -17,14 +17,18 @@ export default function NavigateCard({
 }) {
   return (
     <Link href={url}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="p-1 rounded-xl bg-primary text-white">{icon}</span>
-            <span className="text-muted-foreground">{title}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <span className=""><Settings/></span>
+          <div className="flex flex-col">
+            <span className="">{title}</span>
+            <span className="text-xs text-muted-foreground">{description}</span>
           </div>
-          <span className="text-muted-foreground"><ChevronRight size={20}/></span>
         </div>
-        <span className="text-xs text-muted-foreground">{description}</span>
+        <span className="text-muted-foreground">
+          <ChevronRight size={20} />
+        </span>
+      </div>
     </Link>
   );
 }
