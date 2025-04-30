@@ -6,12 +6,10 @@ export default function QuickCTA({
   label,
   icon,
   href,
-  color
 }: {
   label: string,
   icon: React.ReactElement,
   href: string,
-  color: string
 }){
   return (
     <Link href={href} className="group">

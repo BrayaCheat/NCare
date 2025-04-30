@@ -1,13 +1,13 @@
 "use client";
 
-import { supabase } from "@/lib/supabase/client";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Loader } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import useUserStore from "../store/user";
 
@@ -16,71 +16,68 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [disable, setDisable] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const {setUser} = useUserStore()
+  const { setUser } = useUserStore();
 
-  const onLogin = async () => {
+  // Memoized login handler
+  const onLogin = useCallback(async () => {
     try {
       setLoading(true);
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
+      if (error) throw error;
+
       if (user) {
-        setLoading(false)
         setUser(user);
-        router.refresh();
-        router.push('/admin')
+        router.push('/admin');
       }
-      if (error) {
-        setLoading(false)
-        toast(error.message, {
-          style: {backgroundColor: 'var(--destructive)', color: 'white'}
-        });
+    } catch (error: any) {
+      toast.error(error.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  }, [data.email, data.password, router, setUser]);
+
+  // Optimized input handler
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setData(prev => ({ ...prev, [name]: value }));
+    },
+    []
+  );
+
+  // Form submission handler
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (data.email && data.password) {
+        onLogin();
       }
-    } catch (error) {
-      setLoading(false)
-      console.error("Unexpected error:", error);
-    }
-  };
+    },
+    [data.email, data.password, onLogin]
+  );
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  useEffect(() => {
-    if(data.email.length <= 0 || data.password.length <= 0){
-      // console.log(data.email, data.password, disable)
-      setDisable(true)
-    }else{
-      setDisable(false)
-    }
-  }, [data.email, data.password])
+  // Disable state derived from data
+  const isDisabled = !data.email || !data.password || loading;
 
   return (
     <div className="md:w-[430px] w-full mx-auto rounded-2xl">
-      <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-6 p-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 p-3">
         <div className="flex flex-col items-center">
           <Image
-            src={'/images/logo.png'}
+            src="/images/logo.png"
             width={200}
             height={200}
             alt="Logo"
             priority
           />
         </div>
+
         <div className="flex flex-col gap-3">
           <Label>Email</Label>
           <Input
@@ -89,8 +86,10 @@ export default function Login() {
             type="email"
             value={data.email}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
+
         <div className="flex flex-col gap-3">
           <Label>Password</Label>
           <Input
@@ -99,12 +98,12 @@ export default function Login() {
             type="password"
             value={data.password}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
-        <Button
-            disabled={disable || loading}
-            onClick={onLogin}
-        >{loading ? <Loader className="animate-spin"/> : 'Login'}
+
+        <Button type="submit" disabled={isDisabled}>
+          {loading ? <Loader className="animate-spin" /> : 'Login'}
         </Button>
       </form>
     </div>

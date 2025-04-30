@@ -4,7 +4,6 @@ import NavigateCard from "@/components/NavigateCard";
 import { ExternalLinkIcon, PackagePlusIcon } from "lucide-react";
 import AdminCarousel from "@/components/AdminCarousel";
 import { Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import QuickCTA from "@/components/QuickCTA";
 
 export default function Admin() {
@@ -21,6 +20,13 @@ export default function Admin() {
       label: "Categories Management",
       href: "/admin/categories",
       description: 'Managing categories',
+      color: "bg-primary",
+    },
+    {
+      id: 3,
+      label: "Profile Management",
+      href: "/admin/profile",
+      description: 'Managing profile',
       color: "bg-primary",
     }
   ];
@@ -52,7 +58,6 @@ export default function Admin() {
               label={item.label}
               icon={item.icon}
               href={item.href}
-              color={item.color}
             />
         ))}
       </Card>
@@ -62,7 +67,7 @@ export default function Admin() {
           <NavigateCard
             key={item.id}
             title={item.label}
-            url={item.href}
+            href={item.href}
             description={item.description}
             color={item.color}
           />

@@ -69,7 +69,6 @@ export default function AddProduct() {
       setContent(content.slice(0, 1000));
       toast.error("Only allow 1000 characters", ERROR_TOAST);
     }
-
   }, [name, price, content, discount]);
 
   // validate when user submit
@@ -113,8 +112,8 @@ export default function AddProduct() {
     e.preventDefault();
     const errors = validateForm().join("\n");
     if (errors) {
-      toast.error(errors, ERROR_TOAST)
-      return
+      toast.error(errors, ERROR_TOAST);
+      return;
     }
     try {
       const formData = new FormData();
@@ -124,15 +123,15 @@ export default function AddProduct() {
       formData.append("isDiscount", String(isDiscount));
       formData.append("discountPrice", discount);
       formData.append("description", content);
-      formData.append("userId", user?.id || '')
-      images.map(image => formData.append('images', image))
+      formData.append("userId", user?.id || "");
+      images.map((image) => formData.append("images", image));
       setLoading(true);
       const res = await fetch(`/api/products`, {
         method: "POST",
-        body: formData
+        body: formData,
       });
-      clearForm()
-      console.log('Response back: ', res)
+      clearForm();
+      console.log("Response back: ", res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -140,26 +139,22 @@ export default function AddProduct() {
     }
   };
 
-  const fetchCategories = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/categories`);
-      const data = await res.json();
-      setCategory(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`/api/categories`);
+        const data = await res.json();
+        setCategory(data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchCategories();
-  }, [fetchCategories]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-6">
-      <form
-        onSubmit={handleCreateProduct}
-        className="flex flex-col gap-6"
-      >
+      <form onSubmit={handleCreateProduct} className="flex flex-col gap-6">
         <Card>
           <div className="flex items-center justify-between">
             <Label htmlFor="product-name">Product name</Label>
@@ -223,7 +218,9 @@ export default function AddProduct() {
         <Card>
           <div className="flex items-center justify-between">
             <Label htmlFor="price">Category</Label>
-            <Link href={'/admin/categories/add-category'}><Plus size={18}/></Link>
+            <Link href={"/admin/categories/add-category"}>
+              <Plus size={18} />
+            </Link>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="bg-gray-50 focus-visible:none w-1/2">
@@ -305,10 +302,10 @@ export default function AddProduct() {
             multiple
             accept=".jpg, .jpeg, .png"
             onChange={(e) => {
-              const MAX_FILES = 5
+              const MAX_FILES = 5;
               const filesList = e.target.files;
               if (filesList) {
-                const newFiles = Array.from(filesList).slice(0, MAX_FILES)
+                const newFiles = Array.from(filesList).slice(0, MAX_FILES);
                 setImages((prev) => [...prev, ...newFiles]);
               }
             }}

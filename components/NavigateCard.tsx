@@ -6,18 +6,18 @@ import { ChevronRight } from "lucide-react";
 import { Label } from "./ui/label";
 
 export default function NavigateCard({
-  url,
+  href,
   title,
   description,
   color,
 }: {
-  url: string;
+  href: string;
   title: string;
   description?: string;
   color?: string;
 }) {
   return (
-    <Link href={url} className="group !cursor-default">
+    <Link href={href} className="group !cursor-default">
       <div className="flex items-center justify-between">
         <div className="flex items-stretch gap-3">
           <span className={`${color} p-0.5`} />

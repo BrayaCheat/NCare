@@ -5,24 +5,24 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { ChevronLeft } from "lucide-react";
-import useUserStore from "@/app/store/user";
+// import useUserStore from "@/app/store/user";
 
 export default function AdminHeader(){
   const pathname = usePathname()
   const router = useRouter()
-  const {user} = useUserStore()
+  // const {user} = useUserStore()
 
   const pathDisplay = useMemo(() => {
     return pathname?.split('/')[2]?.toUpperCase()
   }, [pathname])
 
-  const userDisplay = useMemo(() => {
-    return user?.email?.split('-')[0]
-  }, [user])
+  // const userDisplay = useMemo(() => {
+  //   return user?.email?.split('-')[0]
+  // }, [user])
 
-  const userId = useMemo(() => {
-    return user?.id.split('-')[0]
-  }, [user])
+  // const userId = useMemo(() => {
+  //   return user?.id.split('-')[0]
+  // }, [user])
 
 
   const isValidPath = useMemo(() => {
@@ -42,10 +42,7 @@ export default function AdminHeader(){
                 alt="Logo"
                 priority
               />
-              <div className="flex flex-col">
-                <p className="font-medium">{userDisplay}</p>
-                <span className="text-muted-foreground text-xs">ID:{userId}</span>
-              </div>
+              <span className="text-2xl">NCare</span>
             </Link>
           )
           :
