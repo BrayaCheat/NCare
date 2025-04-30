@@ -1,20 +1,20 @@
 import NavigateCard from "@/components/NavigateCard";
 import { Card } from "@/components/ui/card";
 
-export default function AdminProductPage() {
+export default function CategoryPage(){
   const navigateButtons = [
     {
       id: 1,
-      label: "Add new product",
-      href: "/admin/products/add-product",
-      description: "Adding new products & display on store.",
+      label: "Add new category",
+      href: "/admin/categories/add-category",
+      description: "Adding new category & display on store.",
       color: 'bg-primary'
     },
     {
       id: 2,
-      label: "Views all products",
-      href: "/admin/products/view-product",
-      description: "Seeing list of products & Managing on products",
+      label: "View all category",
+      href: "/admin/categories/view-category",
+      description: "Seeing list of categories & Managing on categories",
       color: 'bg-primary'
     },
   ];

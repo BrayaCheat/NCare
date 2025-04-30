@@ -3,7 +3,7 @@
 // import WelcomeUser from "@/components/WelcomeUser";
 // import Logout from "@/components/Logout";
 import NavigateCard from "@/components/NavigateCard";
-import { ArchiveIcon } from "lucide-react";
+import { ArchiveIcon, ExternalLinkIcon, PackagePlusIcon, Settings } from "lucide-react";
 // import useUserStore from "../store/user";
 import AdminCarousel from "@/components/AdminCarousel";
 import { Separator } from "@/components/ui/separator";
@@ -17,14 +17,16 @@ export default function Admin() {
       label: "Products Management",
       icon: <ArchiveIcon size={18} />,
       href: "/admin/products",
-      color: "",
+      description: 'Managing products',
+      color: "bg-primary",
     },
     {
       id: 2,
-      label: "Mock",
+      label: "Categories Management",
       icon: <ArchiveIcon size={18} />,
-      href: "/admin",
-      color: "",
+      href: "/admin/categories",
+      description: 'Managing categories',
+      color: "bg-primary",
     },
     {
       id: 3,
@@ -44,30 +46,30 @@ export default function Admin() {
   const quickOptions = [
     {
       id: 1,
-      label: "New",
-      icon: <ArchiveIcon size={18} />,
-      href: "/admin/products",
+      label: "Quick Add",
+      icon: <PackagePlusIcon size={18} />,
+      href: "/admin/products/add-product",
       color: "",
     },
     {
       id: 2,
-      label: "Views",
-      icon: <ArchiveIcon size={18} />,
-      href: "/admin/products",
+      label: "Quick View",
+      icon: <ExternalLinkIcon size={18} />,
+      href: "/admin/products/view-product",
       color: "",
     },
     {
       id: 3,
       label: "Settings",
-      icon: <ArchiveIcon size={18} />,
-      href: "/admin/products",
+      icon: <Settings size={18} />,
+      href: "/admin",
       color: "",
     },
     {
       id: 4,
       label: "More",
       icon: <ArchiveIcon size={18} />,
-      href: "/admin/products",
+      href: "/admin",
       color: "",
     },
   ];
@@ -84,14 +86,15 @@ export default function Admin() {
         ))}
       </Card>
 
-      <Card className="flex-1 gap-3">
-        {navigateOptions.map((item, index) => (
-          <div key={item.id}>
-            <NavigateCard title={item.label} icon={item.icon} url={item.href} />
-            {index !== navigateOptions.length - 1 && (
-              <Separator className="mt-3" />
-            )}
-          </div>
+      <Card className="flex flex-col gap-6">
+        {navigateOptions.map((item) => (
+          <NavigateCard
+            key={item.id}
+            title={item.label}
+            url={item.href}
+            description={item.description}
+            color={item.color}
+          />
         ))}
       </Card>
     </div>

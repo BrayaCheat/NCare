@@ -2,32 +2,34 @@
 
 import React from "react";
 import Link from "next/link";
-import { ChevronRight, Settings } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { Label } from "./ui/label";
 
 export default function NavigateCard({
   url,
   title,
   description,
-  icon,
+  color,
 }: {
   url: string;
   title: string;
   description?: string;
-  icon?: React.ReactElement;
+  color?: string;
 }) {
   return (
-    <Link href={url}>
+    <Link href={url} className="group !cursor-default">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <span className=""><Settings/></span>
-          <div className="flex flex-col">
-            <span className="">{title}</span>
-            <span className="text-xs text-muted-foreground">{description}</span>
+        <div className="flex items-stretch gap-3">
+          <span className={`${color} p-0.5`} />
+          <div>
+            <Label>{title}</Label>
+            <p className="text-xs text-muted-foreground">{description}</p>
           </div>
         </div>
-        <span className="text-muted-foreground">
-          <ChevronRight size={20} />
-        </span>
+        <ChevronRight
+          size={20}
+          className="text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-transform duration-300"
+        />
       </div>
     </Link>
   );
