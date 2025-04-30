@@ -18,10 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CategoryModal from "@/components/CategoryModal";
-import { Loader } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import useUserStore from "@/app/store/user";
 import { Category } from "@/types/Category";
+import Link from "next/link";
 
 export default function AddProduct() {
   const [name, setName] = useState<string>("");
@@ -223,9 +223,7 @@ export default function AddProduct() {
         <Card>
           <div className="flex items-center justify-between">
             <Label htmlFor="price">Category</Label>
-            <span className="text-xs text-muted-foreground">
-              <CategoryModal />
-            </span>
+            <Link href={'/admin/categories/add-category'}><Plus size={18}/></Link>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="bg-gray-50 focus-visible:none w-1/2">
