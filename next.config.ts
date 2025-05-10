@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['uvcygqzbvdatedzrzwsj.supabase.co'],
   },
-  
+  reactStrictMode: false
 };
 
 export default nextConfig;
